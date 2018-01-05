@@ -141,8 +141,10 @@ func main() {
 			nagios_status = NagiosCritical
 			result_message = fmt.Sprintf("Unexpected role. Expected=%s, Actual=%s", opts.Role, role)
 		} else if opts.Role == "slave" {
-			nagios_status = NagiosCritical
-			result_message = fmt.Sprintf("master_link_status is not up (actual: %s)", master_link_status)
+			if master_link_status != "up" {
+				nagios_status = NagiosCritical
+				result_message = fmt.Sprintf("master_link_status is not up (actual: %s)", master_link_status)
+			}
 		}
 	}
 
