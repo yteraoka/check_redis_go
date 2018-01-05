@@ -127,7 +127,7 @@ func main() {
 		nagios_result(NagiosCritical, fmt.Sprintf("%s", err))
 	}
 
-	percent_used := float64(used_memory) / float64(config.MaxMemory)
+	percent_used := float64(used_memory) / float64(config.MaxMemory) * 100
 	if percent_used >= opts.Crit {
 		nagios_status = NagiosCritical
 		result_message = fmt.Sprintf("Exceeded critical threshold %.2f%%", opts.Crit)
