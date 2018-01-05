@@ -148,7 +148,7 @@ func main() {
 		}
 	}
 
-	stats = fmt.Sprintf("Memory %d/%d (%.2f%% used)", used_memory, config.MaxMemory, percent_used)
+	stats = fmt.Sprintf("Memory used %d/%d MiB (%.2f%%)", used_memory/1024/1024, config.MaxMemory/1024/1024, percent_used)
 
 	perf_str := fmt.Sprintf("|time=%.6fs;;;%.6f;%.6f", ping_response_time.Seconds(),
 		0.0, opts.Timeout)
