@@ -14,7 +14,7 @@ type Options struct {
 	Host     string  `short:"H" long:"host"       description:"Server hostname or IP address" default:"127.0.0.1"`
 	Port     int     `short:"p" long:"port"       description:"TCP Port" default:"6379"`
 	Timeout  float64 `short:"t" long:"timeout"    description:"Timeout in second" default:"1.0"`
-	Password string  `short:"A" long:"password"   description:"Password"`
+	Password string  `short:"a" long:"password"   description:"Password"`
 	Role     string  `short:"r" long:"role"       description:"master or slave" default:"master"`
 	Warn     float64 `short:"w" long:"warn"       description:"Warning threshold memory used %" default:"90"`
 	Crit     float64 `short:"c" long:"crit"       description:"Critical threshold memory used %" default:"95"`
