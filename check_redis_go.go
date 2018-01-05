@@ -130,10 +130,10 @@ func main() {
 	percent_used := float64(used_memory) / float64(config.MaxMemory) * 100
 	if percent_used >= opts.Crit {
 		nagios_status = NagiosCritical
-		result_message = fmt.Sprintf("Exceeded critical threshold %.2f%%", opts.Crit)
+		result_message = fmt.Sprintf("Critical threshold (%.2f%%) exceeded", opts.Crit)
 	} else if percent_used >= opts.Warn {
 		nagios_status = NagiosWarning
-		result_message = fmt.Sprintf("Exceeded warning threshold %.2f%%", opts.Warn)
+		result_message = fmt.Sprintf("Warning threshold (%.2f%%) exceeded", opts.Warn)
 	}
 
 	if opts.Role != "" {
