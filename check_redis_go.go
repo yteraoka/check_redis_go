@@ -21,7 +21,7 @@ type Options struct {
 	Version  bool    `short:"v" long:"version"    description:"Show version and exit"`
 }
 
-const Version = "0.1"
+const Version = "0.2"
 
 const (
 	NagiosOk       = 0
