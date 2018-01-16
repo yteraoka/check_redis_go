@@ -101,8 +101,9 @@ func main() {
 		nagios_result(NagiosCritical, fmt.Sprintf("%s", err))
 	}
 
-	var used_memory int64
+	var used_memory, maxmemory, total_system_memory int64
 	var role, master_link_status string
+	var percent_used float64
 
 	for _, line := range strings.Split(info, "\r\n") {
 		data := strings.SplitN(line, ":", 2)
@@ -110,6 +111,8 @@ func main() {
 			role = data[1]
 		} else if data[0] == "used_memory" {
 			used_memory, _ = strconv.ParseInt(data[1], 10, 64)
+		} else if data[0] == "total_system_memory" {
+			total_system_memory, _ = strconv.ParseInt(data[1], 10, 64)
 		} else if data[0] == "master_link_status" {
 			master_link_status = data[1]
 		}
@@ -126,14 +129,22 @@ func main() {
 	if err != nil {
 		nagios_result(NagiosCritical, fmt.Sprintf("%s", err))
 	}
+	maxmemory = config.MaxMemory
+	if maxmemory == 0 && total_system_memory != 0 {
+		maxmemory = total_system_memory
+	}
 
-	percent_used := float64(used_memory) / float64(config.MaxMemory) * 100
-	if percent_used >= opts.Crit {
-		nagios_status = NagiosCritical
-		result_message = fmt.Sprintf("Critical threshold (%.2f%%) exceeded", opts.Crit)
-	} else if percent_used >= opts.Warn {
-		nagios_status = NagiosWarning
-		result_message = fmt.Sprintf("Warning threshold (%.2f%%) exceeded", opts.Warn)
+	if maxmemory > 0 {
+		percent_used = float64(used_memory) / float64(maxmemory) * 100
+		if percent_used >= opts.Crit {
+			nagios_status = NagiosCritical
+			result_message = fmt.Sprintf("Critical threshold (%.2f%%) exceeded", opts.Crit)
+		} else if percent_used >= opts.Warn {
+			nagios_status = NagiosWarning
+			result_message = fmt.Sprintf("Warning threshold (%.2f%%) exceeded", opts.Warn)
+		}
+	} else {
+		percent_used = 0
 	}
 
 	if opts.Role != "" {
@@ -148,7 +159,7 @@ func main() {
 		}
 	}
 
-	stats = fmt.Sprintf("Memory used %d/%d MiB (%.2f%%)", used_memory/1024/1024, config.MaxMemory/1024/1024, percent_used)
+	stats = fmt.Sprintf("Memory used %d/%d MiB (%.2f%%)", used_memory/1024/1024, maxmemory/1024/1024, percent_used)
 
 	perf_str := fmt.Sprintf("|time=%.6fs;;;%.6f;%.6f", ping_response_time.Seconds(),
 		0.0, opts.Timeout)
